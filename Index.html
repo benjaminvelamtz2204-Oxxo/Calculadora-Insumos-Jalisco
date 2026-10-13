@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Insumos - OXXO</title>
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{margin:0;background:#f2f2f2}
+.header{background:#E30613;color:white;padding:14px 16px;display:flex;justify-content:space-between;font-size:20px;font-weight:bold;position:sticky;top:0}
+.card{background:#FFC933;border-radius:18px;padding:28px 10px;margin:12px 16px;text-align:center;box-shadow:0 3px 6px rgba(0,0,0,0.15)}
+.card h3{color:white;margin:10px 0 0;text-shadow:0 1px 3px #000}
+.card.admin{background:#3F3AB7}
+.page{display:none;padding:12px;background:white;min-height:100vh}
+.page.active{display:block}
+.back{color:#E30613;font-weight:bold;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#333;color:white;padding:8px}
+td{border:1px solid #ddd;padding:6px;text-align:center}
+input{width:65px;padding:5px;border-radius:6px;border:1px solid #ccc;text-align:center}
+.ok{color:green;font-weight:bold}
+.merma{color:red;font-weight:bold;background:#ffe0e0}
+.btn{width:100%;padding:14px;background:#E30613;color:white;border:0;border-radius:10px;font-size:16px;font-weight:bold;margin-top:12px}
+.small{font-size:9px;color:#666;display:block}
+</style>
+</head>
+<body>
+<div id="home">
+<div class="header"><span>Calculadora de Insumos</span><span>⚙️</span></div>
+<div class="card" onclick="openPage('capu')"><div style="font-size:40px">☕</div><h3>Máquina de Capuchino</h3></div>
+<div class="card" onclick="openPage('frappe')"><div style="font-size:40px">🧋</div><h3>Máquina de Frappé</h3></div>
+<div class="card" onclick="openPage('grano')"><div style="font-size:40px">🫙</div><h3>Máquina de Grano</h3></div>
+<div class="card admin" onclick="openPage('admin')"><h3>Administrativo</h3></div>
+</div>
+
+<div id="capu" class="page"><span class="back" onclick="goHome()">← Volver</span><h3>Capuchino</h3><table id="t_capu"></table><button class="btn" onclick="calcular('capu')">CALCULAR</button></div>
+<div id="frappe" class="page"><span class="back" onclick="goHome()">← Volver</span><h3>Frappé / Bases</h3><table id="t_frappe"></table><button class="btn" onclick="calcular('frappe')">CALCULAR</button></div>
+<div id="grano" class="page"><span class="back" onclick="goHome()">← Volver</span><h3>Grano</h3><table id="t_grano"></table><button class="btn" onclick="calcular('grano')">CALCULAR</button></div>
+<div id="admin" class="page"><span class="back" onclick="goHome()">← Volver</span><h3>Administrativo</h3><table id="t_admin"></table><button class="btn" onclick="calcular('admin')">CALCULAR</button></div>
+
+<script>
+const data={
+grano:[[7456,"CAFE DE GRANO",788],[33421,"MEZCLAS MEXICANAS",60],[26727,"CAFE ANDATTI GOURMET",1150]],
+capu:[[10356,"VAINILLA ORIGINAL",456],[61310,"CAPUCHINO S/AZUCAR",456],[10357,"CAPUCHINO ORIGINAL",456],[17759,"CAPUCHINO MOKA ANDATTI",456],[56075,"CAPUCHINO LATTE",324],[10204,"CAPUCHINO CHOCOLATE ORIG",324],[10354,"CANELA ORIGINAL",324],[31339,"CAPU CHOC ABUELITA",164],[65919,"CAPU CARLOS V",191]],
+frappe:[[65906,"BASE CARLOS V",750],[26728,"BASE VAINILLA 1000GR",1000],[26730,"BASE LECHE 1000GR",1000],[10203,"CHOCOLATE ORIGINAL",324],[10355,"VAINILLA FRANCESA",324],[10353,"FRESA ORIGINAL",324],[65905,"BASE FRESA",750]],
+admin:[[33312,"MANGA PORTA VASOS",1000]]
+};
+function render(){
+for(let key in data){
+let html="<tr><th>SKU<br>Insumo</th><th>Factor X</th><th>Bolsas</th><th>Ventas</th><th>Dif</th></tr>";
+data[key].forEach((d,i)=>{
+html+=`<tr><td>${d[0]}<span class='small'>${d[1]}</span></td><td>${d[2]}</td><td><input id="${key}_b${i}" type="number" step="0.1" placeholder="0"></td><td><input id="${key}_v${i}" type="number" placeholder="0"></td><td id="${key}_d${i}">-</td></tr>`;
+});
+document.getElementById("t_"+key).innerHTML=html;
+}
+}
+function openPage(id){document.getElementById("home").style.display="none";document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function goHome(){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("home").style.display="block";}
+function calcular(key){
+data[key].forEach((d,i)=>{
+let b=parseFloat(document.getElementById(key+"_b"+i).value)||0;
+let v=parseFloat(document.getElementById(key+"_v"+i).value)||0;
+let diff=b*d[2]-v;
+let el=document.getElementById(key+"_d"+i);
+el.innerText=diff;
+el.className=diff<-10?"merma":"ok";
+});
+}
+render();
+</script>
+</body>
+</html>
