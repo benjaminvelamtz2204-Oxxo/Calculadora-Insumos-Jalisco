@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Insumos OXXO - Región Jalisco</title>
+<title>Calculadora OXXO Jalisco</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
-.header{background:#E30613;color:white;padding:14px 10px;position:sticky;top:0;z-index:10}
-.header h1{font-size:18px;font-weight:900}
-.badge{background:#FFD400;color:black;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:800;float:right;margin-top:-20px}
-.tabs-container{display:flex;justify-content:flex-end;gap:8px;padding:10px;background:#f5f5f5;overflow-x:auto;white-space:nowrap;border-bottom:2px solid #ddd}
-.tabs-container::-webkit-scrollbar{display:none}
-.tab{padding:10px 16px;border-radius:20px;border:none;font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0}
-.tab.active{background:#FFD400;color:#b00000;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.tab.inactive{background:#E30613;color:white}
-.arrow{font-size:20px;color:#888;padding:8px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#2196F3;color:white;padding:10px 6px;font-size:11px}
-td{padding:8px 6px;border-bottom:1px solid #e0e0e0;text-align:center}
-td:nth-child(2){text-align:left;font-weight:700}
-input{width:50px;padding:6px;text-align:center;border-radius:8px;border:1px solid #ccc}
-.total-bar{background:#111;color:#FFD400;padding:12px;text-align:center;font-weight:900;font-size:14px}
-.btn-limpiar{background:#FFD400;border:none;width:95%;margin:10px auto;display:block;padding:14px;border-radius:30px;font-weight:900;font-size:16px}
-.hint{font-size:11px;color:#666;padding:6px 12px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f2f2f2}
+.header{background:#d40000;color:white;padding:12px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:14px;font-weight:900}
+.badge{background:#ffcc00;color:#222;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:900}
+.tabs{display:flex;background:white}
+.tab{flex:1;padding:12px;text-align:center;font-weight:900;cursor:pointer;border-bottom:3px solid transparent;font-size:12px}
+.tab.active{border-bottom:3px solid #d40000;background:#fff0f0;color:#d40000}
+.wrap{padding:5px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:white;font-size:11px;min-width:600px}
+th{padding:8px 4px;color:white}
+th.c1{background:#2196f3} th.c2{background:#e67e22}
+td{padding:4px;border:1px solid #ddd;text-align:center}
+td.prod{text-align:left;font-weight:bold;font-size:10px}
+input{width:65px;padding:5px;border:1px solid #999;border-radius:4px;text-align:center;font-weight:bold}
+.total{background:#dbe9ff;font-weight:900}
+.foot{background:#222;color:#ffcc00;font-weight:900;font-size:13px}
+.hidden{display:none}
+.btn{width:100%;margin-top:8px;padding:12px;background:#ffcc00;border:none;border-radius:8px;font-weight:900}
 </style>
 </head>
 <body>
@@ -30,19 +31,23 @@ input{width:50px;padding:6px;text-align:center;border-radius:8px;border:1px soli
 <h1>CALCULADORA INSUMOS OXXO</h1>
 <span class="badge">REGIÓN JALISCO</span>
 </div>
-
-<div class="tabs-container">
-<button class="tab active" onclick="showTab('cafe')">01 CAFÉ</button>
-<button class="tab inactive" onclick="showTab('capu')">02 CAPUCHINOS Y BASE</button>
-<span class="arrow">›</span>
+<div class="tabs">
+<div id="t1" class="tab active" onclick="ver('cafe')">01 CAFÉ</div>
+<div id="t2" class="tab" onclick="ver('cap')">02 CAPUCHINOS Y BASE</div>
 </div>
-<div class="hint">Desliza horizontalmente ▶ para cambiar de categoría</div>
-
-<div id="tab-cafe">
-<table>
-<thead>
-<tr><th>CODIGO</th><th>01 CAFÉ</th><th>FACTOR</th><th>BOLSAS</th><th>EXTRAS</th><th>TOTAL</th></tr>
-</thead>
-<tbody>
-<tr><td>7456</td><td>ONZA DE CAFÉ GRANO</td><td>788</td><td><input type="number" value="0" oninput="calc()" id="b1"></td><td><input type="number" value="0" oninput="calc()" id="e1"></td><td id="t1">0</td></tr>
-<tr><td>33421</td><td>OZMEZCLASMEXICAVCZ</td><td>60</td><td><input type="number" value="0" oninput="calc()" id="b2"></td
+<div class="wrap">
+<div id="p-cafe"><table><thead><tr><th class="c1">CODIGO</th><th class="c1">01 CAFÉ</th><th class="c1">FACTOR</th><th class="c1">BOLSAS</th><th class="c1">EXTRAS</th><th class="c1">TOTAL</th></tr></thead><tbody id="b-cafe"></tbody><tfoot><tr class="foot"><td colspan="5">TOTAL 01 CAFÉ</td><td id="gt-cafe">0</td></tr></tfoot></table></div>
+<div id="p-cap" class="hidden"><table><thead><tr><th class="c2">CODIGO</th><th class="c2">02 CAPUCHINOS Y BASE</th><th class="c2">FACTOR</th><th class="c2">BOLSAS</th><th class="c2">EXTRAS</th><th class="c2">TOTAL</th></tr></thead><tbody id="b-cap"></tbody><tfoot><tr class="foot"><td colspan="5">TOTAL 02 CAPUCHINOS</td><td id="gt-cap">0</td></tr></tfoot></table></div>
+<button class="btn" onclick="limpiar()">🗑️ Limpiar</button>
+</div>
+<script>
+var cafe=[[7456,"ONZA DE CAFE GRANO",788],[33421,"OZMEZCLASMEXICAVCZ",60],[26727,"CAFEGRANOPLUMA",1150]];
+var cap=[[64492,"MOKA BLANCO HERSHEYS",456],[10357,"ONZACAPORIGINAL",456],[10356,"OZ. VAINILLA ORIGINA",456],[61310,"ONZA SIN AZUCAR",456],[17759,"ONZACAPMOKAANDATTI",456],[65402,"ONZA AVELLANA",324],[31339,"ONZA CAP CHOCOLATE A",164],[10354,"OZ CANELAORIGINAL PZ",324],[10204,"ONZA CAP CHOCOLATE O",324],[44168,"OZ CAP CMA IRLANDESA",324],[60014,"ONZA CAPUCHINO TOFFE",324],[56075,"ONZA CAPUCCINO LATTE",324],[60335,"INSUMO CAFE DE OLLA",60],[26728,"BASE VAINILLA 1000 G",1000],[26730,"BASE LECHE 1000 GR",1000],[26731,"BASECHOCOLATE1000GR",1000],[57365,"BASE CHOCHERSHEYS",1000],[65695,"BASE CARAMELO",1000],[65906,"CARLOS V",750],[65076,"BASE CHAI",1000],[54473,"BASE TURIN",1000]];
+function crear(datos,id,pref){var tb=document.getElementById(id);tb.innerHTML="";for(var i=0;i<datos.length;i++){tb.innerHTML+="<tr><td>"+datos[i][0]+"</td><td class='prod'>"+datos[i][1]+"</td><td>"+datos[i][2]+"</td><td><input type='number' id='b_"+pref+"_"+i+"' oninput=\"calc('"+pref+"',"+i+")\" placeholder='0'></td><td><input type='number' id='e_"+pref+"_"+i+"' oninput=\"calc('"+pref+"',"+i+")\" placeholder='0'></td><td class='total' id='t_"+pref+"_"+i+"'>0</td></tr>";}}
+function calc(p,i){var d=p=='cafe'?cafe:cap;var f=d[i][2];var b=parseFloat(document.getElementById('b_'+p+'_'+i).value)||0;var e=parseFloat(document.getElementById('e_'+p+'_'+i).value)||0;document.getElementById('t_'+p+'_'+i).innerText=b*f+e;var tot=0;for(var j=0;j<d.length;j++){tot+=parseFloat(document.getElementById('t_'+p+'_'+j).innerText)||0;}document.getElementById('gt-'+p).innerText=tot;}
+function ver(n){document.getElementById('p-cafe').classList.toggle('hidden',n!='cafe');document.getElementById('p-cap').classList.toggle('hidden',n!='cap');document.getElementById('t1').classList.toggle('active',n=='cafe');document.getElementById('t2').classList.toggle('active',n=='cap');}
+function limpiar(){for(var i=0;i<cafe.length;i++){document.getElementById('b_cafe_'+i).value='';document.getElementById('e_cafe_'+i).value='';document.getElementById('t_cafe_'+i).innerText='0';}for(var i=0;i<cap.length;i++){document.getElementById('b_cap_'+i).value='';document.getElementById('e_cap_'+i).value='';document.getElementById('t_cap_'+i).innerText='0';}document.getElementById('gt-cafe').innerText='0';document.getElementById('gt-cap').innerText='0';}
+crear(cafe,'b-cafe','cafe');crear(cap,'b-cap','cap');
+</script>
+</body>
+</html>
