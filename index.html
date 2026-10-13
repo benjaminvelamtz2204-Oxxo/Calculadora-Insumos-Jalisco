@@ -3,40 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora OXXO Jalisco</title>
+<title>Calculadora Insumos OXXO Jalisco</title>
 <style>
-*{box-sizing:border-box;font-family:system-ui,Arial}body{margin:0;background:#f0f0f0}.top{background:#E30613;color:#fff;padding:18px;text-align:center;font-weight:900;font-size:18px}.card{background:#FFC933;border-radius:20px;margin:14px;padding:20px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1)}.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:800;margin-top:10px;font-size:16px}.red{background:#E30613;color:#fff}.yellow{background:#FFD700;color:#000}.page{display:none;padding:14px}.page.show{display:block}input{width:100%;padding:14px;margin:7px 0;border-radius:10px;border:1px solid #ccc;font-size:16px}.box{background:#fff;border-radius:12px;padding:14px;margin-top:12px}.admin{background:#3F3AB7;color:#fff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif}
+body{background:#f5f5f5}
+.header{background:#d40000;color:white;padding:15px;text-align:center}
+.header h1{font-size:22px;font-weight:900}
+.header .sub{background:black;color:white;display:inline-block;padding:4px 14px;border-radius:12px;font-size:11px;margin-top:6px}
+.container{padding:12px;max-width:700px;margin:0 auto}
+.card{background:white;border-radius:12px;padding:12px;box-shadow:0 2px 6px rgba(0,0,0,.1);border-left:5px solid #d40000}
+.title-bar{background:#d40000;color:white;padding:10px 15px;border-radius:20px;text-align:center;font-weight:900;font-size:18px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#d40000;color:white;padding:8px 4px}
+td{padding:7px 4px;border-bottom:1px solid #eee;text-align:center}
+td:nth-child(2){text-align:left}
+input{width:70px;padding:6px;border:2px solid #ffcc00;border-radius:8px;text-align:center;font-weight:bold}
+.result{background:#ffcc00;color:#000;padding:2px 6px;border-radius:6px;font-weight:900;min-width:55px;display:inline-block}
+.search{width:100%;padding:12px;border:2px solid #d40000;border-radius:10px;margin-bottom:10px}
+.total-box{background:#222;color:#ffcc00;padding:12px;border-radius:10px;text-align:center;font-size:18px;font-weight:900;margin-top:10px}
+.btn{width:100%;background:#ffcc00;color:#000;border:none;padding:14px;border-radius:10px;font-weight:900;font-size:16px;margin-top:10px}
+.footer{background:#d40000;color:white;text-align:center;padding:12px;border-radius:10px;font-weight:bold;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="top">CALCULADORA INSUMOS - OXXO JALISCO</div>
-
-<div id="p1" class="page show">
-<div class="card"><h2>🧮 Calculadora Insumos</h2><p>Calcula lo que necesitas</p><button class="btn red" onclick="go('p2')">Entrar</button></div>
-<div class="card admin"><h2>👑 Administracion</h2><button class="btn yellow" onclick="go('adm')">Entrar como admin</button></div>
+<div class="header">
+<h1>TABLA DE EQUIVALENCIAS<br>OXXO JALISCO</h1>
+<div class="sub">Insumos • presentación y factor de equivalencia</div>
 </div>
-
-<div id="p2" class="page">
-<h2>Calculadora</h2>
-<input id="ventas" type="number" placeholder="Ventas del dia $">
-<input id="precio" type="number" placeholder="Precio por insumo">
-<button class="btn red" onclick="calc()">Calcular</button>
-<div id="res" class="box">Resultado aqui</div>
-<button class="btn" onclick="go('p1')">Volver</button>
+<div class="container">
+<input type="text" id="buscador" class="search" placeholder="🔍 Buscar SKU o producto..." onkeyup="filtrar()">
+<div class="card">
+<div class="title-bar">CALCULADORA DE INSUMOS</div>
+<table><thead><tr><th>SKU</th><th>DESCRIPCIÓN</th><th>FACTOR</th><th>BOLSAS</th><th>PIEZAS</th></tr></thead><tbody id="cuerpo"></tbody></table>
+<div class="total-box">Total piezas: <span id="total">0</span></div>
+<button class="btn" onclick="limpiar()">🗑️ Limpiar todo</button>
+<div class="footer">¡Gracias por tu preferencia! OXXO</div>
 </div>
-
-<div id="adm" class="page">
-<h2>Login Admin</h2>
-<input id="u" placeholder="Usuario: admin">
-<input id="p" type="password" placeholder="Contraseña: oxxo123">
-<button class="btn red" onclick="login()">Entrar</button>
-<button class="btn" onclick="go('p1')">Volver</button>
 </div>
-
 <script>
-function go(id){document.querySelectorAll('.page').forEach(e=>e.classList.remove('show'));document.getElementById(id).classList.add('show')}
-function calc(){let v=document.getElementById('ventas').value, pr=document.getElementById('precio').value; if(!v||!pr){alert('Llena los datos');return;} document.getElementById('res').innerHTML='<b>Total insumos: $'+(v*pr)+'</b><br><b>Cantidad aprox: '+(Math.ceil(v/50))+' piezas</b>'}
-function login(){let u=document.getElementById('u').value, pw=document.getElementById('p').value; if(u=='admin'&&pw=='oxxo123'){alert('Bienvenido Admin');}else{alert('Usuario o contraseña incorrectos');}}
+const datos=[[7456,"ONZA DE CAFÉ DE GRANO",788],[33421,"ONZA MEZCLAS MEXICANAS",60],[26727,"CAFE ANDATTI GOURMET",1150],[10356,"ONZA VAINILLA ORIGINAL",456],[61310,"ONZA CAPUCHINO SIN AZUCAR",456],[10357,"ONZA CAPUCHINO ORIGINAL",456],[17759,"ONZA CAPUCHINO MOKA ANDATTI",456],[56075,"ONZA CAPUCHINO LATTE",324],[10204,"ONZA CAPUCHINO CHOCOLATE ORIGINAL",324],[10354,"ONZA CANELA ORIGINAL",324],[31339,"ONZA CAPUCHINO CHOCOLATE ABUELITA",164],[65919,"ONZA CAPUCHINO CARLOS V",191],[65906,"BASE CARLOS V",750],[26728,"BASE VAINILLA 1000 GR",1000],[26730,"BASE LECHE 1000 GR",1000],[57365,"BASE CHOCOLATE HERSHEY",1000],[26731,"BASE CHOCOLATE 1000 GR",1000],[65695,"BASE ANDATTI CARAMELO",1000],[33312,"MANGA PORTA VASOS",1000],[46620,"FAJILLA ANDATTI",25],[1589,"CREMA LIQUIDA COFFE MATE",360],[37139,"AZUCAR REFINADA (BLANCA)",1000],[2628,"AGITADOR GRANDE",1000],[7316,"SWEET (SPLENDA) AMARILLA",1000],[37521,"SVETIA 1 GR (CAJA CHICA) VERDE",1000],];
+function render(lista){const cuerpo=document.getElementById('cuerpo');cuerpo.innerHTML='';lista.forEach(d=>{const idx=datos.indexOf(d);cuerpo.innerHTML+=`<tr><td><b>${d[0]}</b></td><td>${d[1]}</td><td>X ${d[2]}</td><td><input type="number" id="bolsa_${idx}" oninput="calcular(${idx})" placeholder="0"></td><td><span class="result" id="res_${idx}">0</span></td></tr>`;});}
+function calcular(i){const bolsas=parseFloat(document.getElementById(`bolsa_${i}`)?.value)||0;const piezas=Math.round(bolsas*datos[i][2]);document.getElementById(`res_${i}`).innerText=piezas;totalizar();}
+function totalizar(){let t=0;datos.forEach((_,i)=>{const v=document.getElementById(`res_${i}`);if(v)t+=parseInt(v.innerText||0);});document.getElementById('total').innerText=t.toLocaleString();}
+function filtrar(){const q=document.getElementById('buscador').value.toLowerCase();const f=datos.filter(d=>d[0].toString().includes(q)||d[1].toLowerCase().includes(q));const cuerpo=document.getElementById('cuerpo');cuerpo.innerHTML='';f.forEach(d=>{const idx=datos.indexOf(d);cuerpo.innerHTML+=`<tr><td><b>${d[0]}</b></td><td>${d[1]}</td><td>X ${d[2]}</td><td><input type="number" id="bolsa_${idx}" oninput="calcular(${idx})" placeholder="0"></td><td><span class="result" id="res_${idx}">0</span></td></tr>`;});}
+function limpiar(){document.querySelectorAll('input[type=number]').forEach(e=>e.value='');document.querySelectorAll('.result').forEach(e=>e.innerText='0');document.getElementById('total').innerText='0';}
+render(datos);
 </script>
 </body>
 </html>
