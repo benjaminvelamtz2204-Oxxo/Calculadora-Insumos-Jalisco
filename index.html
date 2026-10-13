@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora OXXO Jalisco</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,Arial}body{margin:0;background:#f0f0f0}.top{background:#E30613;color:#fff;padding:18px;text-align:center;font-weight:900;font-size:18px}.card{background:#FFC933;border-radius:20px;margin:14px;padding:20px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1)}.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:800;margin-top:10px;font-size:16px}.red{background:#E30613;color:#fff}.yellow{background:#FFD700;color:#000}.page{display:none;padding:14px}.page.show{display:block}input{width:100%;padding:14px;margin:7px 0;border-radius:10px;border:1px solid #ccc;font-size:16px}.box{background:#fff;border-radius:12px;padding:14px;margin-top:12px}.admin{background:#3F3AB7;color:#fff}
+</style>
+</head>
+<body>
+<div class="top">CALCULADORA INSUMOS - OXXO JALISCO</div>
+
+<div id="p1" class="page show">
+<div class="card"><h2>🧮 Calculadora Insumos</h2><p>Calcula lo que necesitas</p><button class="btn red" onclick="go('p2')">Entrar</button></div>
+<div class="card admin"><h2>👑 Administracion</h2><button class="btn yellow" onclick="go('adm')">Entrar como admin</button></div>
+</div>
+
+<div id="p2" class="page">
+<h2>Calculadora</h2>
+<input id="ventas" type="number" placeholder="Ventas del dia $">
+<input id="precio" type="number" placeholder="Precio por insumo">
+<button class="btn red" onclick="calc()">Calcular</button>
+<div id="res" class="box">Resultado aqui</div>
+<button class="btn" onclick="go('p1')">Volver</button>
+</div>
+
+<div id="adm" class="page">
+<h2>Login Admin</h2>
+<input id="u" placeholder="Usuario: admin">
+<input id="p" type="password" placeholder="Contraseña: oxxo123">
+<button class="btn red" onclick="login()">Entrar</button>
+<button class="btn" onclick="go('p1')">Volver</button>
+</div>
+
+<script>
+function go(id){document.querySelectorAll('.page').forEach(e=>e.classList.remove('show'));document.getElementById(id).classList.add('show')}
+function calc(){let v=document.getElementById('ventas').value, pr=document.getElementById('precio').value; if(!v||!pr){alert('Llena los datos');return;} document.getElementById('res').innerHTML='<b>Total insumos: $'+(v*pr)+'</b><br><b>Cantidad aprox: '+(Math.ceil(v/50))+' piezas</b>'}
+function login(){let u=document.getElementById('u').value, pw=document.getElementById('p').value; if(u=='admin'&&pw=='oxxo123'){alert('Bienvenido Admin');}else{alert('Usuario o contraseña incorrectos');}}
+</script>
+</body>
+</html>
