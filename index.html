@@ -1,159 +1,102 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OXXO 01 Café y 02 Capuchinos</title>
+<title>OXXO Solo Total</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f0f0f0}
 .header{background:#d40000;color:white;padding:12px;text-align:center;position:sticky;top:0;z-index:10}
 .header h1{font-size:16px;font-weight:900}
-.tabs{display:flex;gap:0;background:white}
+.tabs{display:flex;background:white;position:sticky;top:48px;z-index:9}
 .tab{flex:1;padding:12px;text-align:center;font-weight:900;cursor:pointer;border-bottom:3px solid transparent;font-size:13px}
 .tab.active{border-bottom:3px solid #d40000;background:#fff0f0;color:#d40000}
 .container{padding:4px;max-width:1000px;margin:0 auto;overflow-x:auto}
-table{width:100%;border-collapse:collapse;background:white;font-size:11px;min-width:750px}
-th{background:#2196f3;color:white;padding:7px 3px;font-size:10px}
+table{width:100%;border-collapse:collapse;background:white;font-size:11px;min-width:600px}
+th{background:#2196f3;color:white;padding:8px 4px;font-size:11px}
 th.orange{background:#e67e22}
-td{padding:3px;border:1px solid #ddd;text-align:center}
+td{padding:4px;border:1px solid #ddd;text-align:center}
 td.prod{text-align:left;font-weight:bold;font-size:10px}
-input{width:60px;padding:5px;border:1px solid #aaa;border-radius:3px;text-align:center;font-weight:bold;font-size:11px}
-.total-cell{background:#dbe9ff;font-weight:900}
-.teorico{background:#fff3cd}
-.dif-neg{background:#ff4444;color:white;font-weight:900}
-.dif-pos{background:#4caf50;color:white}
-.total-footer{background:#222;color:#ffcc00;font-weight:900}
+input{width:70px;padding:6px;border:1px solid #aaa;border-radius:4px;text-align:center;font-weight:bold}
+.total-cell{background:#dbe9ff;font-weight:900;font-size:13px}
+.total-footer{background:#222;color:#ffcc00;font-weight:900;font-size:14px}
 .hidden{display:none}
 .btn{width:100%;background:#ffcc00;border:none;padding:12px;border-radius:8px;font-weight:900;margin-top:8px}
 </style>
 </head>
 <body>
-<div class="header"><h1>CALCULADORA INSUMOS OXXO JALISCO</h1></div>
+<div class="header"><h1>CALCULADORA INSUMOS OXXO</h1></div>
 <div class="tabs">
 <div class="tab active" onclick="showTab('cafe')">01 CAFÉ</div>
 <div class="tab" onclick="showTab('cap')">02 CAPUCHINOS Y BASE</div>
 </div>
 
 <div class="container">
-<!-- 01 CAFE -->
 <div id="tab-cafe">
 <table>
 <thead>
-<tr><th>CODIGO</th><th>01 CAFÉ</th><th>BOLSAS</th><th>ONZAS EXTR</th><th>TOTAL</th><th>TEORICO</th><th>DIFERENC</th></tr>
+<tr><th>CODIGO</th><th>01 CAFÉ</th><th>BOLSAS</th><th>ONZAS EXTR</th><th>TOTAL</th></tr>
 </thead>
 <tbody id="body-cafe"></tbody>
-<tfoot><tr class="total-footer"><td colspan="4">TOTAL 01 CAFÉ</td><td id="gtotal-cafe">0</td><td id="gteo-cafe">0</td><td id="gdif-cafe">0</td></tr></tfoot>
+<tfoot><tr class="total-footer"><td colspan="4">TOTAL 01 CAFÉ</td><td id="gtotal-cafe">0</td></tr></tfoot>
 </table>
 </div>
 
-<!-- 02 CAPUCHINOS -->
 <div id="tab-cap" class="hidden">
 <table>
 <thead>
-<tr><th class="orange">CODIGO</th><th class="orange">02 CAPUCHINOS Y BASE</th><th class="orange">FACTOR</th><th class="orange">BOLSAS</th><th class="orange">EXTRAS</th><th class="orange">TOTAL</th><th class="orange">TEORICO</th><th class="orange">DIFERENCIA</th></tr>
+<tr><th class="orange">CODIGO</th><th class="orange">02 CAPUCHINOS Y BASE</th><th class="orange">FACTOR</th><th class="orange">BOLSAS</th><th class="orange">EXTRAS</th><th class="orange">TOTAL</th></tr>
 </thead>
 <tbody id="body-cap"></tbody>
-<tfoot><tr class="total-footer"><td colspan="5">TOTAL 02 CAPUCHINOS</td><td id="gtotal-cap">0</td><td id="gteo-cap">0</td><td id="gdif-cap">0</td></tr></tfoot>
+<tfoot><tr class="total-footer"><td colspan="5">TOTAL 02 CAPUCHINOS</td><td id="gtotal-cap">0</td></tr></tfoot>
 </table>
 </div>
 
-<button class="btn" onclick="limpiarTodo()">🗑️ Limpiar Todo</button>
+<button class="btn" onclick="limpiarTodo()">🗑️ Limpiar</button>
 </div>
 
 <script>
-const cafeDatos=[
-[7456,"ONZA DE CAFÉ GRANO",788],
-[33421,"OZMEZCLASMEXICAVCZ",60],
-[26727,"CAFEGRANOPLUMA",1150],
-];
-const capDatos=[
-[64492,"MOKA BLANCO HERSHEYS",456],
-[10357,"ONZACAPORIGINAL",456],
-[10356,"OZ. VAINILLA ORIGINA",456],
-[61310,"ONZA SIN AZUCAR",456],
-[17759,"ONZACAPMOKAANDATTI",456],
-[65402,"ONZA AVELLANA",324],
-[31339,"ONZA CAP CHOCOLATE A",164],
-[10354,"OZ CANELAORIGINAL PZ",324],
-[10204,"ONZA CAP CHOCOLATE O",324],
-[44168,"OZ CAP CMA IRLANDESA",324],
-[60014,"ONZA CAPUCHINO TOFFE",324],
-[56075,"ONZA CAPUCCINO LATTE",324],
-[60335,"INSUMO CAFE DE OLLA",60],
-[26728,"BASE VAINILLA 1000 G",1000],
-[26730,"BASE LECHE 1000 GR",1000],
-[26731,"BASECHOCOLATE1000GR",1000],
-[57365,"BASE CHOCHERSHEYS",1000],
-[65695,"BASE CARAMELO",1000],
-[65906,"CARLOS V",750],
-[65076,"BASE CHAI",1000],
-[54473,"BASE TURIN",1000],
-];
+const cafeDatos=[[7456,"ONZA DE CAFÉ GRANO",788],[33421,"OZMEZCLASMEXICAVCZ",60],[26727,"CAFEGRANOPLUMA",1150]];
+const capDatos=[[64492,"MOKA BLANCO HERSHEYS",456],[10357,"ONZACAPORIGINAL",456],[10356,"OZ. VAINILLA ORIGINA",456],[61310,"ONZA SIN AZUCAR",456],[17759,"ONZACAPMOKAANDATTI",456],[65402,"ONZA AVELLANA",324],[31339,"ONZA CAP CHOCOLATE A",164],[10354,"OZ CANELAORIGINAL PZ",324],[10204,"ONZA CAP CHOCOLATE O",324],[44168,"OZ CAP CMA IRLANDESA",324],[60014,"ONZA CAPUCHINO TOFFE",324],[56075,"ONZA CAPUCCINO LATTE",324],[60335,"INSUMO CAFE DE OLLA",60],[26728,"BASE VAINILLA 1000 G",1000],[26730,"BASE LECHE 1000 GR",1000],[26731,"BASECHOCOLATE1000GR",1000],[57365,"BASE CHOCHERSHEYS",1000],[65695,"BASE CARAMELO",1000],[65906,"CARLOS V",750],[65076,"BASE CHAI",1000],[54473,"BASE TURIN",1000]];
 
 function buildTable(datos, tbodyId, prefix){
- const tbody=document.getElementById(tbodyId);
- tbody.innerHTML='';
+ const tbody=document.getElementById(tbodyId);tbody.innerHTML='';
  datos.forEach((d,i)=>{
-  const id=`${prefix}_${i}`;
   tbody.innerHTML+=`<tr>
-  <td>${d[0]}</td>
-  <td class="prod">${d[1]}</td>
+  <td>${d[0]}</td><td class="prod">${d[1]}</td>
   ${prefix==='cap'?`<td>${d[2]}</td>`:''}
-  <td><input type="number" id="b_${id}" placeholder="0" oninput="calc('${prefix}',${i})"></td>
-  <td><input type="number" id="e_${id}" placeholder="0" oninput="calc('${prefix}',${i})"></td>
-  <td class="total-cell" id="t_${id}">0</td>
-  <td><input type="number" id="teo_${id}" placeholder="0" class="teorico" oninput="calc('${prefix}',${i})"></td>
-  <td id="dif_${id}">0</td>
+  <td><input type="number" id="b_${prefix}_${i}" placeholder="0" oninput="calc('${prefix}',${i})"></td>
+  <td><input type="number" id="e_${prefix}_${i}" placeholder="0" oninput="calc('${prefix}',${i})"></td>
+  <td class="total-cell" id="t_${prefix}_${i}">0</td>
   </tr>`;
  });
 }
-
 function calc(prefix, idx){
  const datos=prefix==='cafe'?cafeDatos:capDatos;
  const factor=datos[idx][2];
  const b=parseFloat(document.getElementById(`b_${prefix}_${idx}`).value)||0;
  const e=parseFloat(document.getElementById(`e_${prefix}_${idx}`).value)||0;
- const teo=parseFloat(document.getElementById(`teo_${prefix}_${idx}`).value)||0;
  const total=b*factor+e;
- const dif=total-teo;
  document.getElementById(`t_${prefix}_${idx}`).innerText=total;
- const difEl=document.getElementById(`dif_${prefix}_${idx}`);
- difEl.innerText=dif;
- difEl.className=dif<0?'dif-neg':dif>0?'dif-pos':'';
  totalGeneral(prefix);
 }
-
 function totalGeneral(prefix){
  const datos=prefix==='cafe'?cafeDatos:capDatos;
- let gt=0,gteo=0;
- datos.forEach((_,i)=>{
-  gt+=parseFloat(document.getElementById(`t_${prefix}_${i}`).innerText)||0;
-  gteo+=parseFloat(document.getElementById(`teo_${prefix}_${i}`).value)||0;
- });
+ let gt=0;
+ datos.forEach((_,i)=>{gt+=parseFloat(document.getElementById(`t_${prefix}_${i}`).innerText)||0;});
  document.getElementById(`gtotal-${prefix}`).innerText=gt;
- document.getElementById(`gteo-${prefix}`).innerText=gteo;
- const gdif=gt-gteo;
- const el=document.getElementById(`gdif-${prefix}`);
- el.innerText=gdif;
- el.style.background=gdif<0?'#ff4444':gdif>0?'#4caf50':'#222';
 }
-
 function showTab(name){
  document.getElementById('tab-cafe').classList.toggle('hidden',name!=='cafe');
  document.getElementById('tab-cap').classList.toggle('hidden',name!=='cap');
- document.querySelectorAll('.tab').forEach((t,i)=>{
-  t.classList.toggle('active',(i===0&&name==='cafe')||(i===1&&name==='cap'));
- });
+ document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',(i===0&&name==='cafe')||(i===1&&name==='cap'));});
 }
-
 function limpiarTodo(){
- [...cafeDatos.keys()].forEach(i=>{['b_','e_','teo_'].forEach(p=>{const el=document.getElementById(`${p}cafe_${i}`);if(el)el.value='';});document.getElementById(`t_cafe_${i}`).innerText='0';document.getElementById(`dif_cafe_${i}`).innerText='0';document.getElementById(`dif_cafe_${i}`).className='';});
- [...capDatos.keys()].forEach(i=>{['b_','e_','teo_'].forEach(p=>{const el=document.getElementById(`${p}cap_${i}`);if(el)el.value='';});document.getElementById(`t_cap_${i}`).innerText='0';document.getElementById(`dif_cap_${i}`).innerText='0';document.getElementById(`dif_cap_${i}`).className='';});
- totalGeneral('cafe');totalGeneral('cap');
+ [...cafeDatos.keys()].forEach(i=>{['b_','e_'].forEach(p=>{const el=document.getElementById(`${p}cafe_${i}`);if(el)el.value='';});document.getElementById(`t_cafe_${i}`).innerText='0';});
+ [...capDatos.keys()].forEach(i=>{['b_','e_'].forEach(p=>{const el=document.getElementById(`${p}cap_${i}`);if(el)el.value='';});document.getElementById(`t_cap_${i}`).innerText='0';});
+ document.getElementById('gtotal-cafe').innerText='0';document.getElementById('gtotal-cap').innerText='0';
 }
-
 buildTable(cafeDatos,'body-cafe','cafe');
 buildTable(capDatos,'body-cap','cap');
 </script>
